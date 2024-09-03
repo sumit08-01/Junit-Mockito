@@ -10,15 +10,16 @@ import static org.junit.jupiter.api.Assertions.*;
 //@DisplayNameGeneration(DisplayNameGenerator.Simple.class)
 //@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 //@DisplayNameGeneration(DisplayNameGenerator.IndicativeSentences.class)
-@TestMethodOrder(MethodOrderer.MethodName.class)
-class DemoUtilsCustomDisplayNameTestOrderByMethodName {
-
+@TestMethodOrder(MethodOrderer.DisplayName.class)
+class DemoUtilsCustomDisplayNameOrderByDisplayNameTest {
+    @DisplayName("Equals and NotEquals")
     @Test // annotate a method with @Test, that show's it is a test method
     void equals_And_NotEquals(){
         DemoUtils demoUtils = new DemoUtils(); // Create object of the class which you want to test
         assertEquals(6, demoUtils.add(2,4), "2+4 must be 6"); // static import of the assertEquals method and testing the add method
         assertNotEquals(9, demoUtils.add(2,4), "2+4 not must be 9");// static import of the assertEquals method and testing the add method
     }
+    @DisplayName("Null and NotNull")
     @Test
     void equalsNull_And_NotNull(){
         DemoUtils demoUtils = new DemoUtils(); // Create object of the class which you want to test
@@ -28,8 +29,9 @@ class DemoUtilsCustomDisplayNameTestOrderByMethodName {
         assertNotNull(demoUtils.checkNull(str2), "Str2 is not null");
     }
 
+    @DisplayName("random1")
     @Test
-    void vandom1(){
+    void random1(){
         DemoUtils demoUtils = new DemoUtils(); // Create object of the class which you want to test
         String str1 = null;
         String str2 = "sumit";
@@ -37,8 +39,9 @@ class DemoUtilsCustomDisplayNameTestOrderByMethodName {
         assertNotNull(demoUtils.checkNull(str2), "Str2 is not null");
     }
 
+    @DisplayName("random3")
     @Test
-    void zandom3(){
+    void random3(){
         DemoUtils demoUtils = new DemoUtils(); // Create object of the class which you want to test
         String str1 = null;
         String str2 = "sumit";
@@ -46,8 +49,9 @@ class DemoUtilsCustomDisplayNameTestOrderByMethodName {
         assertNotNull(demoUtils.checkNull(str2), "Str2 is not null");
     }
 
+    @DisplayName("random2")
     @Test
-    void aandom2(){
+    void random2(){
         DemoUtils demoUtils = new DemoUtils(); // Create object of the class which you want to test
         String str1 = null;
         String str2 = "sumit";
