@@ -1,6 +1,6 @@
-package com.luv2code.component;
+package com.sumit.component;
 
-import com.luv2code.component.models.CollegeStudent;
+import com.sumit.component.models.CollegeStudent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
