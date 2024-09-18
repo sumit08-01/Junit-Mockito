@@ -1,7 +1,7 @@
 package com.luv2code.springmvc.models;
 
 public interface Grade {
-    double getGrade();
+
 
     int getId();
 
@@ -12,4 +12,6 @@ public interface Grade {
     void setStudentId(int studentId);
 
     void setGrade(double grade);
+
+    double getGrade();
 }
