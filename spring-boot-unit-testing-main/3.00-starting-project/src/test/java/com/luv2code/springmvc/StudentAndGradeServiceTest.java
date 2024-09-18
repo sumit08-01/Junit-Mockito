@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class StudentAndGradeServiceTest {
 
     }
 
+    @Sql("/insertData.sql") // Execute the sql before the test method, @Before execute first then execute sql
     @Test
     public void getGradeBookService(){
        Iterable<CollegeStudent> iterableCollegeStudent = studentService.getGradeBook();
@@ -68,7 +70,8 @@ public class StudentAndGradeServiceTest {
        for(CollegeStudent collegeStudent : iterableCollegeStudent){
            collegeStudents.add(collegeStudent);
        }
-       assertEquals(1,collegeStudents.size());
+//       assertEquals(1,collegeStudents.size());
+        assertEquals(5,collegeStudents.size()); // for 5 records
     }
 
     @AfterEach
