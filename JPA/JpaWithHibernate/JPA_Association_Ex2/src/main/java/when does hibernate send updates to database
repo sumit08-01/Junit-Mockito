@@ -1,0 +1,28 @@
+
+1--------------------> 
+@Transcational
+public void someMethodChanges(){
+
+	em.presist(User1);
+	em.presist(User2);
+	
+	//change user1
+	//change user2 //--> if any thing wrong happened in this line the whole method is ROLL BACK and nothing changes
+
+} all changes are saved down to the database if any thing does not go wrong
+
+
+2--------------------> 
+
+@Transcational
+public void someMethodChanges(){
+
+	em.presist(User1);
+	em.presist(User2);
+	
+	em.flush(); // a this line the above changes are send to Databases and after this line if any thing wrong happened the whole method is ROLL BACK and nothing changes
+	
+	//change user1
+	//change user2 //--> if any thing wrong happened in this line the whole method is ROLL BACK and nothing changes
+
+} all changes are saved down to the database if any thing does not go wrong

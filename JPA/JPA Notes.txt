@@ -1,0 +1,263 @@
+JPA & Hibernate ----> 
+----------------------------------------------------------------
+DEBUGGING GUIDE (If you have problems)
+
+JPA Hibernate Debugging Guide: https://github.com/in28minutes/in28minutes-initiatives/blob/master/The-in28Minutes-TroubleshootingGuide-And-FAQ/jpa-and-hibernate.md
+
+Why do we need to configure bootstrap-mode? Details here - https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.3-Release-Notes#bootstrapmode-for-jpa-repositories
+
+Why do we need defer-datasource-initialization? Details here - https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.5.0-M3-Release-Notes#hibernate-and-datasql
+
+---------------------------------------------------------------------------
+
+JUnit 5 Guide: https://github.com/in28minutes/in28minutes-initiatives/blob/master/The-in28Minutes-TroubleshootingGuide-And-FAQ/junit5.md
+
+JUnit 5 Upgrade Commit: https://github.com/in28minutes/jpa-with-hibernate/commit/0ae2007c8e08420e6d5ab2a86499274c7c60c8ae
+
+------------------------------------------------------------------------------
+
+query for Join column and @ManyToMany Assocaiation
+
+SELECT * FROM 
+STUDENT_COURSE, STUDENT, COURSE
+WHERE
+STUDENT_COURSE.STUDENT_ID = STUDENT.ID AND
+STUDENT_COURSE.COURSE_ID = COURSE.ID
+
+-------------------------------------------------
+
+Inheritance IN JPA -------> 
+
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // 
+if i am not specify this then by default is single table
+And annotated On the Parent Class
+
+The disavantage of the single table you have more Nullable Columns
+ex-> if you insert data in hourlywage then salary column will be null and vise-versa
+
+And the advantage is performance because your are getting the details from a single table
+
+@DiscriminatorColumn(name = "EmployeeType") // this Notation change the coloumn name DType to EmployeeType(this coloumn is discriminator column through this will identify that this value come from this table and another come from anoter table
+
+ex--> Single of the all classes
+ 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // by default this
+@DiscriminatorColumn(name = "EmployeeType") // this Notation change the coloumn name DType to EmployeeType(this coloumn
+											// is discriminator column through this will identify that this value come
+											// from this table and another come from anoter table
+public abstract class Employee { // abstract because I don't want to any one make object of this class
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	public Employee() {
+	}
+
+	public Employee(String name) {
+		super();
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + "]";
+	}
+
+}
+
+ex--> Table per class
+
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // Only concrete class table will be create like-> FullTimeEmployee or PartTimeEmployee
+
+query for retrieve details 
+select e1_0.id,e1_0.clazz_,e1_0.name,e1_0.salary,e1_0.hourly_wage from (select salary, id, name, null as hourly_wage, 1 as clazz_ from full_time_employee union all select null as salary, id, name, hourly_wage, 2 as clazz_ from part_time_employee) e1_0
+
+difference on the basis of UNION
+
+disadvantage is --> column is repeates and storage is occupied and union is not much cause problem for this
+
+@Entity
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // by default this
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // Only concrete class table will be create like-> FullTimeEmployee or PartTimeEmployee
+//@DiscriminatorColumn(name = "EmployeeType") // this Notation change the coloumn name DType to EmployeeType(this coloumn
+											// is discriminator column through this will identify that this value come
+											// from this table and another come from anoter table
+											// or we can remove this is "InheritanceType.TABLE_PER_CLASS"
+public abstract class Employee { // abstract because I don't want to any one make object of this class
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	public Employee() {
+	}
+
+	public Employee(String name) {
+		super();
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + "]";
+	}
+
+}
+
+ex--> Joined table --> 
+
+@Inheritance(strategy = InheritanceType.JOINED) // In this all classes have it's own table, and retrieve details perform on JOINED basis
+
+query for this --> 
+
+select e1_0.id,case when e1_1.id is not null then 1 when e1_2.id is not null then 2 end,e1_0.name,e1_1.salary,e1_2.hourly_wage from employee e1_0 left join full_time_employee e1_1 on e1_0.id=e1_1.id left join part_time_employee e1_2 on e1_0.id=e1_2.id
+
+complex query left join right join or kuch like this
+
+advantage is --> on the basis of Database design there is not duplication of columns in the DB
+
+disadvatage is --> perfromance wise is not good because query have join three tables
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED) // In this all classes have it's own table, and retrieve details perform on JOINED basis
+public abstract class Employee { // abstract because I don't want to any one make object of this class
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	public Employee() {
+	}
+
+	public Employee(String name) {
+		super();
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + "]";
+	}
+
+}
+
+ex--> Mapped By --> 
+
+@MappedSuperclass // this class is not associated with entity but it's subclasses can
+//@Entity
+
+A class designated with the <code>MappedSuperclass</code> 
+ * annotation can be mapped in the same way as an entity except that the 
+ * mappings will apply only to its subclasses since no table 
+ * exists for the mapped superclass itself. When applied to the 
+ * subclasses the inherited mappings will apply in the context 
+ * of the subclass tables. Mapping information may be overridden 
+ * in such subclasses by using the <code>AttributeOverride</code> and 
+ * <code>AssociationOverride</code> annotations or corresponding XML elements.
+
+class like this --> 
+@MappedSuperclass // this class is not associated with entity but it's subclasses can
+//@Entity
+//@Inheritance(strategy = InheritanceType.JOINED) // In this all classes have it's own table, and retrieve details perform on JOINED basis
+public abstract class Employee { // abstract because I don't want to any one make object of this class
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	public Employee() {
+	}
+
+	public Employee(String name) {
+		super();
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [name=" + name + "]";
+	}
+
+}
+
+repo methos --> 
+
+public List<PartTimeEmployee> retrievePartAllEmployee(){
+		return entityManager.createQuery("select e from PartTimeEmployee e", PartTimeEmployee.class).getResultList();
+	}
+	public List<FullTimeEmployee> retrieveFullAllEmployee(){
+		return entityManager.createQuery("select e from FullTimeEmployee e", FullTimeEmployee.class).getResultList();
+	}
+
+calling like this --> 
+
+log.info("Part Time Employee Details : ---> " + employeeRepository.retrievePartAllEmployee());
+		log.info("Full Time Employee Details : ---> " + employeeRepository.retrieveFullAllEmployee());
+
+for this we have to indivisually call all the concrete class without calling the superclass
+
+exception --> 
+org.hibernate.hql.internal.ast.QuerySyntaxtException: Employee is not mapped
+
